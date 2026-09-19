@@ -1,0 +1,1679 @@
+-- =========================================================
+-- СИСТЕМА КЛЮЧЕЙ (KEY SYSTEM) by @boldbild
+-- =========================================================
+local KeyValid = false
+local KeyCoreGui = game:GetService("CoreGui")
+local ok_gethui, gethui_func = pcall(function() return gethui() end)
+local keyContainer = (ok_gethui and gethui_func()) or KeyCoreGui
+
+local KeyGui = Instance.new("ScreenGui")
+KeyGui.Name = "DanyageyKeySystem"
+KeyGui.ResetOnSpawn = false
+KeyGui.ZIndexBehavior = Enum.ZIndexBehavior.Global
+KeyGui.Parent = keyContainer
+
+local KeyFrame = Instance.new("Frame")
+KeyFrame.Size = UDim2.new(0, 300, 0, 180)
+KeyFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+KeyFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+KeyFrame.BackgroundColor3 = Color3.fromRGB(18, 19, 23)
+KeyFrame.BorderSizePixel = 0
+KeyFrame.ZIndex = 1
+KeyFrame.Parent = KeyGui
+local kc = Instance.new("UICorner"); kc.CornerRadius = UDim.new(0, 12); kc.Parent = KeyFrame
+local ks = Instance.new("UIStroke"); ks.Color = Color3.fromRGB(50, 52, 63); ks.Thickness = 1.5; ks.Parent = KeyFrame
+
+local KHeader = Instance.new("Frame")
+KHeader.Size = UDim2.new(1, 0, 0, 40)
+KHeader.BackgroundColor3 = Color3.fromRGB(13, 14, 18)
+KHeader.BorderSizePixel = 0
+KHeader.Parent = KeyFrame
+local khc = Instance.new("UICorner"); khc.CornerRadius = UDim.new(0, 12); khc.Parent = KHeader
+local khcc = Instance.new("Frame")
+khcc.Position = UDim2.new(0, 0, 1, -10); khcc.Size = UDim2.new(1, 0, 0, 10)
+khcc.BackgroundColor3 = KHeader.BackgroundColor3; khcc.BorderSizePixel = 0; khcc.Parent = KHeader
+
+local KTitle = Instance.new("TextLabel")
+KTitle.Size = UDim2.new(1, -40, 1, 0)
+KTitle.Position = UDim2.new(0, 10, 0, 0)
+KTitle.BackgroundTransparency = 1
+KTitle.Text = "Danyagey Key System"
+KTitle.Font = Enum.Font.Code
+KTitle.TextSize = 16
+KTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+KTitle.TextXAlignment = Enum.TextXAlignment.Left
+KTitle.Parent = KHeader
+
+local KClose = Instance.new("TextButton")
+KClose.Size = UDim2.new(0, 30, 0, 30)
+KClose.Position = UDim2.new(1, -35, 0.5, 0)
+KClose.AnchorPoint = Vector2.new(0, 0.5)
+KClose.BackgroundColor3 = Color3.fromRGB(150, 55, 55)
+KClose.Text = "X"
+KClose.Font = Enum.Font.Code
+KClose.TextSize = 14
+KClose.TextColor3 = Color3.fromRGB(255, 255, 255)
+KClose.AutoButtonColor = false
+KClose.Parent = KHeader
+local kcc = Instance.new("UICorner"); kcc.CornerRadius = UDim.new(0, 6); kcc.Parent = KClose
+
+local KBody = Instance.new("Frame")
+KBody.Size = UDim2.new(1, 0, 1, -40)
+KBody.Position = UDim2.new(0, 0, 0, 40)
+KBody.BackgroundTransparency = 1
+KBody.Parent = KeyFrame
+
+local KInfo = Instance.new("TextLabel")
+KInfo.Size = UDim2.new(0.9, 0, 0, 20)
+KInfo.Position = UDim2.new(0.05, 0, 0, 10)
+KInfo.BackgroundTransparency = 1
+KInfo.Text = "Ключи в тг @boldbild"
+KInfo.Font = Enum.Font.Code
+KInfo.TextSize = 13
+KInfo.TextColor3 = Color3.fromRGB(200, 205, 220)
+KInfo.Parent = KBody
+
+local KBox = Instance.new("TextBox")
+KBox.Size = UDim2.new(0.9, 0, 0, 35)
+KBox.Position = UDim2.new(0.05, 0, 0, 40)
+KBox.BackgroundColor3 = Color3.fromRGB(26, 28, 36)
+KBox.PlaceholderText = "Введите ключ..."
+KBox.Text = ""
+KBox.Font = Enum.Font.Code
+KBox.TextSize = 14
+KBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+KBox.Parent = KBody
+local kbc = Instance.new("UICorner"); kbc.CornerRadius = UDim.new(0, 6); kbc.Parent = KBox
+
+local KBtn = Instance.new("TextButton")
+KBtn.Size = UDim2.new(0.9, 0, 0, 30)
+KBtn.Position = UDim2.new(0.05, 0, 0, 85)
+KBtn.BackgroundColor3 = Color3.fromRGB(60, 130, 255)
+KBtn.Text = "Проверить"
+KBtn.Font = Enum.Font.Code
+KBtn.TextSize = 14
+KBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+KBtn.Parent = KBody
+local kbtnc = Instance.new("UICorner"); kbtnc.CornerRadius = UDim.new(0, 6); kbtnc.Parent = KBtn
+
+local KStatus = Instance.new("TextLabel")
+KStatus.Size = UDim2.new(0.9, 0, 0, 20)
+KStatus.Position = UDim2.new(0.05, 0, 0, 120)
+KStatus.BackgroundTransparency = 1
+KStatus.Text = ""
+KStatus.Font = Enum.Font.Code
+KStatus.TextSize = 11
+KStatus.TextColor3 = Color3.fromRGB(255, 60, 60)
+KStatus.TextWrapped = true
+KStatus.Parent = KBody
+
+-- ⚠️ ВАЖНО: ЗДЕСЬ ВПИШИ СВОИ КЛЮЧИ ВМЕСТО DANYAKEY, TEST, VIP
+local ValidKeys = {"DANYAKEY", "TEST", "VIP"} 
+
+local function CheckKey()
+    local input = KBox.Text
+    for _, key in ipairs(ValidKeys) do
+        if input == key then
+            KeyValid = true
+            KeyGui:Destroy()
+            return
+        end
+    end
+    KStatus.Text = "Неверный ключ! Ключи в тг @boldbild"
+end
+
+KBtn.MouseButton1Click:Connect(CheckKey)
+KBox.FocusLost:Connect(function(enterPressed)
+    if enterPressed then CheckKey() end
+end)
+
+KClose.MouseButton1Click:Connect(function()
+    KStatus.Text = "You have ban for this script write to @boldbild if you have unban"
+    KeyValid = false
+    task.wait(2)
+    KeyGui:Destroy()
+    while true do task.wait(1) end
+end)
+
+repeat task.wait() until KeyValid
+-- =========================================================
+-- КОНЕЦ СИСТЕМЫ КЛЮЧЕЙ
+-- =========================================================
+
+-- =========================================================
+-- Danyagey GUI (Real 3D World Physics Particles, Full Theme, Hub, Custom Fog)
+-- =========================================================
+print("[Danyagey] init")
+
+local CoreGui = game:GetService("CoreGui")
+local RunService = game:GetService("RunService")
+local UIS = game:GetService("UserInputService")
+local HttpService = game:GetService("HttpService")
+local Players = game:GetService("Players")
+local Lighting = game:GetService("Lighting")
+
+local LocalPlayer = Players.LocalPlayer
+if not LocalPlayer then
+    repeat task.wait() until Players.LocalPlayer
+    LocalPlayer = Players.LocalPlayer
+end
+
+local ok, hui = pcall(function() return gethui() end)
+local container = (ok and hui) or CoreGui
+
+pcall(function()
+    for _, n in ipairs({"DanyageyMainGui","DanyageyWatermark","DanyageyGlobalSnow"}) do
+        local g = container:FindFirstChild(n)
+        if g then g:Destroy() end
+    end
+    local wp = workspace:FindFirstChild("Danyagey3DParticles")
+    if wp then wp:Destroy() end
+
+    if Lighting:FindFirstChild("DanyageyCC") then Lighting.DanyageyCC:Destroy() end
+    if Lighting:FindFirstChild("DanyageyBloom") then Lighting.DanyageyBloom:Destroy() end
+
+    if getgenv().AeroColorLoop then getgenv().AeroColorLoop:Disconnect() end
+    if getgenv().AeroSnowLoop then getgenv().AeroSnowLoop:Disconnect() end
+    if getgenv().AeroWorldParticlesLoop then getgenv().AeroWorldParticlesLoop:Disconnect() end
+    if getgenv().AeroFogLoop then getgenv().AeroFogLoop:Disconnect() end
+
+    if getgenv().DanyageyOrigLighting then
+        Lighting.FogColor = getgenv().DanyageyOrigLighting.FogColor
+        Lighting.FogEnd = getgenv().DanyageyOrigLighting.FogEnd
+        Lighting.Ambient = getgenv().DanyageyOrigLighting.Ambient
+        Lighting.OutdoorAmbient = getgenv().DanyageyOrigLighting.OutdoorAmbient
+        Lighting.ClockTime = getgenv().DanyageyOrigLighting.ClockTime
+        getgenv().DanyageyOrigLighting = nil
+    end
+end)
+
+-- Сохраняем оригинальное освещение
+getgenv().DanyageyOrigLighting = {
+    FogColor = Lighting.FogColor,
+    FogEnd = Lighting.FogEnd,
+    Ambient = Lighting.Ambient,
+    OutdoorAmbient = Lighting.OutdoorAmbient,
+    ClockTime = Lighting.ClockTime
+}
+
+local CustomCC = Instance.new("ColorCorrectionEffect")
+CustomCC.Name = "DanyageyCC"
+CustomCC.Enabled = false
+CustomCC.Parent = Lighting
+
+local CustomBloom = Instance.new("BloomEffect")
+CustomBloom.Name = "DanyageyBloom"
+CustomBloom.Enabled = false
+CustomBloom.Parent = Lighting
+
+-- =========================================================
+-- КОНФИГ И СОСТОЯНИЕ
+-- =========================================================
+local isMobile = UIS.TouchEnabled and not UIS.KeyboardEnabled
+local viewport = workspace.CurrentCamera and workspace.CurrentCamera.ViewportSize or Vector2.new(1280, 720)
+
+local DEFAULT_W, DEFAULT_H
+if isMobile then
+    DEFAULT_W = math.clamp(math.floor(viewport.X * 0.85), 280, 420)
+    DEFAULT_H = math.clamp(math.floor(viewport.Y * 0.55), 260, 380)
+else
+    DEFAULT_W, DEFAULT_H = 560, 440
+end
+
+local MIN_W
+local BASE_RATIO = DEFAULT_H / DEFAULT_W
+local MAX_W_LIMIT = math.floor(viewport.X * 0.95)
+local MAX_H_LIMIT = math.floor(viewport.Y * 0.9)
+MIN_W = isMobile and 260 or 400
+local MAX_W = math.clamp(MAX_W_LIMIT, MIN_W + 50, 1400)
+
+local CONFIG_FILE = "DanyageyGuiConfig.json"
+local cfgSize = Vector2.new(DEFAULT_W, DEFAULT_H)
+local cfgLocked = false
+local themeTarget = "both"
+local currentColorName = "Стандартный"
+
+local ptType = "Выкл"
+local ptSpeed = 50
+local ptAmount = 30
+local currentFogName = "Выкл"
+
+pcall(function()
+    if type(isfile) == "function" and isfile(CONFIG_FILE) then
+        local d = HttpService:JSONDecode(readfile(CONFIG_FILE))
+        if d then
+            if d.Size then cfgSize = Vector2.new(d.Size.X, d.Size.Y) end
+            if d.Locked ~= nil then cfgLocked = d.Locked end
+            if d.ThemeTarget then themeTarget = d.ThemeTarget end
+            if d.ColorName then currentColorName = d.ColorName end
+            if d.PtType then ptType = d.PtType end
+            if d.PtSpeed then ptSpeed = d.PtSpeed end
+            if d.PtAmount then ptAmount = d.PtAmount end
+            if d.FogName then currentFogName = d.FogName end
+        end
+    end
+end)
+
+if cfgSize.X > viewport.X or cfgSize.Y > viewport.Y or cfgSize.X < MIN_W then
+    cfgSize = Vector2.new(DEFAULT_W, DEFAULT_H)
+    cfgLocked = false
+end
+
+local function saveCfg()
+    pcall(function()
+        if type(writefile) == "function" then
+            writefile(CONFIG_FILE, HttpService:JSONEncode({
+                Size = {X = cfgSize.X, Y = cfgSize.Y},
+                Locked = cfgLocked,
+                ThemeTarget = themeTarget,
+                ColorName = currentColorName,
+                PtType = ptType,
+                PtSpeed = ptSpeed,
+                PtAmount = ptAmount,
+                FogName = currentFogName
+            }))
+        end
+    end)
+end
+saveCfg()
+
+local ORIG_GUI_BASE    = Color3.fromRGB(18, 19, 23)
+local ORIG_GUI_STROKE  = Color3.fromRGB(50, 52, 63)
+local ORIG_GUI_HEADER  = Color3.fromRGB(13, 14, 18)
+local ORIG_GUI_SIDEBAR = Color3.fromRGB(15, 16, 20)
+local ORIG_GUI_MODAL   = Color3.fromRGB(38, 42, 55)
+local ORIG_WM_BASE     = Color3.fromRGB(22, 23, 30)
+local ORIG_WM_STROKE   = Color3.fromRGB(80, 85, 105)
+
+-- =========================================================
+-- УТИЛИТЫ
+-- =========================================================
+local function corner(p, r)
+    local c = Instance.new("UICorner"); c.CornerRadius = UDim.new(0, r); c.Parent = p; return c
+end
+local function stroke(p, col, th)
+    local s = Instance.new("UIStroke"); s.Color = col; s.Thickness = th or 1; s.Parent = p; return s
+end
+local function pad(p, t, b, l, r)
+    local x = Instance.new("UIPadding")
+    x.PaddingTop = UDim.new(0, t or 0); x.PaddingBottom = UDim.new(0, b or 0)
+    x.PaddingLeft = UDim.new(0, l or 0); x.PaddingRight = UDim.new(0, r or 0)
+    x.Parent = p; return x
+end
+local function vlist(p, gap, halign)
+    local x = Instance.new("UIListLayout")
+    x.Padding = UDim.new(0, gap or 0); x.FillDirection = Enum.FillDirection.Vertical
+    x.HorizontalAlignment = halign or Enum.HorizontalAlignment.Center
+    x.SortOrder = Enum.SortOrder.LayoutOrder; x.Parent = p; return x
+end
+local function hlist(p, gap, halign)
+    local x = Instance.new("UIListLayout")
+    x.Padding = UDim.new(0, gap or 0); x.FillDirection = Enum.FillDirection.Horizontal
+    x.HorizontalAlignment = halign or Enum.HorizontalAlignment.Center
+    x.VerticalAlignment = Enum.VerticalAlignment.Center
+    x.SortOrder = Enum.SortOrder.LayoutOrder; x.Parent = p; return x
+end
+
+-- =========================================================
+-- ГЛАВНОЕ ОКНО
+-- =========================================================
+local MainGui = Instance.new("ScreenGui")
+MainGui.Name = "DanyageyMainGui"
+MainGui.ResetOnSpawn = false
+MainGui.ZIndexBehavior = Enum.ZIndexBehavior.Global
+MainGui.Parent = container
+
+local MainFrame = Instance.new("Frame")
+MainFrame.Name = "MainFrame"
+MainFrame.Size = UDim2.fromOffset(cfgSize.X, cfgSize.Y)
+MainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+MainFrame.BackgroundColor3 = ORIG_GUI_BASE
+MainFrame.BorderSizePixel = 0
+MainFrame.ClipsDescendants = true
+MainFrame.ZIndex = 1
+MainFrame.Parent = MainGui
+corner(MainFrame, 12)
+local MainStroke = stroke(MainFrame, ORIG_GUI_STROKE, 1.5)
+
+-- Внутренние снежинки интерфейса
+local flakes = {}
+local flakeCount = isMobile and 25 or 40
+for i = 1, flakeCount do
+    local f = Instance.new("Frame")
+    f.Name = "Snowflake"
+    f.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    f.BackgroundTransparency = math.random(20, 50) / 100
+    local sz = math.random(4, 9)
+    f.Size = UDim2.fromOffset(sz, sz)
+    f.BorderSizePixel = 0
+    f.ZIndex = 100
+    f.Parent = MainFrame
+    corner(f, sz / 2)
+    table.insert(flakes, {
+        Obj = f, X = math.random(), Y = math.random(),
+        Sp = math.random(4, 9) / 1000, Dr = math.random(-5, 5) / 1000
+    })
+end
+
+getgenv().AeroSnowLoop = RunService.RenderStepped:Connect(function(dt)
+    for _, f in ipairs(flakes) do
+        if MainFrame.Visible then
+            f.Y = f.Y + f.Sp * dt * 60
+            f.X = f.X + f.Dr * dt * 60
+            if f.Y > 1 then f.Y = -0.1; f.X = math.random() end
+            if f.X < -0.1 then f.X = 1.1 elseif f.X > 1.1 then f.X = -0.1 end
+            f.Obj.Position = UDim2.new(f.X, 0, f.Y, 0)
+            f.Obj.Visible = true
+        else
+            f.Obj.Visible = false
+        end
+    end
+end)
+
+-- Шапка
+local Header = Instance.new("Frame")
+Header.Size = UDim2.new(1, 0, 0, 45)
+Header.BackgroundColor3 = ORIG_GUI_HEADER
+Header.BorderSizePixel = 0
+Header.ZIndex = 2
+Header.Parent = MainFrame
+corner(Header, 12)
+
+local HeaderCover = Instance.new("Frame")
+HeaderCover.Position = UDim2.new(0, 0, 1, -10)
+HeaderCover.Size = UDim2.new(1, 0, 0, 10)
+HeaderCover.BackgroundColor3 = Header.BackgroundColor3
+HeaderCover.BorderSizePixel = 0
+HeaderCover.ZIndex = 2
+HeaderCover.Parent = Header
+
+local TitleLabel = Instance.new("TextLabel")
+TitleLabel.Position = UDim2.new(0, 15, 0.5, 0)
+TitleLabel.AnchorPoint = Vector2.new(0, 0.5)
+TitleLabel.Size = UDim2.new(0, 200, 1, 0)
+TitleLabel.BackgroundTransparency = 1
+TitleLabel.Text = "Danyagey1488.win ✨"
+TitleLabel.Font = Enum.Font.Code
+TitleLabel.TextSize = 16
+TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
+TitleLabel.ZIndex = 3
+TitleLabel.Parent = Header
+
+local CtrlBox = Instance.new("Frame")
+CtrlBox.AnchorPoint = Vector2.new(1, 0.5)
+CtrlBox.Position = UDim2.new(1, -10, 0.5, 0)
+CtrlBox.Size = UDim2.new(0, 115, 0, 30)
+CtrlBox.BackgroundTransparency = 1
+CtrlBox.ZIndex = 3
+CtrlBox.Parent = Header
+hlist(CtrlBox, 5, Enum.HorizontalAlignment.Right)
+
+local function headBtn(txt, cb)
+    local b = Instance.new("TextButton")
+    b.Size = UDim2.new(0, 32, 0, 32)
+    b.BackgroundColor3 = Color3.fromRGB(24, 25, 31)
+    b.Text = txt
+    b.Font = Enum.Font.Code
+    b.TextSize = 14
+    b.TextColor3 = Color3.fromRGB(220, 225, 235)
+    b.AutoButtonColor = false
+    b.ZIndex = 4
+    b.Parent = CtrlBox
+    corner(b, 6)
+    stroke(b, Color3.fromRGB(50, 52, 63), 1)
+    b.MouseButton1Click:Connect(cb)
+    return b
+end
+
+-- Sidebar / Content
+local Sidebar = Instance.new("ScrollingFrame")
+Sidebar.Position = UDim2.new(0, 0, 0, 45)
+Sidebar.Size = UDim2.new(0, 160, 1, -45)
+Sidebar.BackgroundColor3 = ORIG_GUI_SIDEBAR
+Sidebar.BorderSizePixel = 0
+Sidebar.CanvasSize = UDim2.new(0, 0, 0, 0)
+Sidebar.ScrollBarThickness = 2
+Sidebar.ZIndex = 2
+Sidebar.Parent = MainFrame
+vlist(Sidebar, 6)
+pad(Sidebar, 10, 10, 0, 0)
+
+local Content = Instance.new("Frame")
+Content.Position = UDim2.new(0, 165, 0, 45)
+Content.Size = UDim2.new(1, -165, 1, -45)
+Content.BackgroundTransparency = 1
+Content.ZIndex = 2
+Content.Parent = MainFrame
+
+local Tabs = {}
+local function createTab(name)
+    local page = Instance.new("ScrollingFrame")
+    page.Size = UDim2.new(1, 0, 1, 0)
+    page.BackgroundTransparency = 1
+    page.Visible = false
+    page.CanvasSize = UDim2.new(0, 0, 0, 0)
+    page.AutomaticCanvasSize = Enum.AutomaticSize.Y
+    page.ScrollBarThickness = 4
+    page.ZIndex = 2
+    page.Parent = Content
+    vlist(page, 6)
+    pad(page, 8, 8, 0, 0)
+
+    local btn = Instance.new("TextButton")
+    btn.Size = UDim2.new(0.9, 0, 0, 34)
+    btn.BackgroundColor3 = Color3.fromRGB(22, 23, 29)
+    btn.Text = "  " .. name
+    btn.Font = Enum.Font.Code
+    btn.TextSize = 13
+    btn.TextColor3 = Color3.fromRGB(190, 195, 210)
+    btn.TextXAlignment = Enum.TextXAlignment.Left
+    btn.AutoButtonColor = false
+    btn.ZIndex = 3
+    btn.Parent = Sidebar
+    corner(btn, 8)
+
+    btn.MouseButton1Click:Connect(function()
+        for _, t in pairs(Tabs) do
+            t.Page.Visible = false
+            t.Btn.BackgroundColor3 = Color3.fromRGB(22, 23, 29)
+            t.Btn.TextColor3 = Color3.fromRGB(190, 195, 210)
+        end
+        page.Visible = true
+        btn.BackgroundColor3 = Color3.fromRGB(35, 38, 48)
+        btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    end)
+
+    Tabs[name] = {Page = page, Btn = btn}
+    return page, btn
+end
+
+local MainTab, MainBtn = createTab("Главная 🎀")
+local FeaturesTab = createTab("Функции 🚀")
+local SettingsTab = createTab("Настройки ⚙️")
+
+MainTab.Visible = true
+MainBtn.BackgroundColor3 = Color3.fromRGB(35, 38, 48)
+MainBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+
+-- =========================================================
+-- ВАТЕРМАРКА + ЛИНИИ
+-- =========================================================
+local deviceType = isMobile and "Mobile" or "PC"
+local playerName = LocalPlayer.Name
+
+local WMGui = Instance.new("ScreenGui")
+WMGui.Name = "DanyageyWatermark"
+WMGui.ResetOnSpawn = false
+WMGui.ZIndexBehavior = Enum.ZIndexBehavior.Global
+WMGui.Parent = container
+
+local GuideX = Instance.new("Frame")
+GuideX.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+GuideX.BackgroundTransparency = 0.65
+GuideX.BorderSizePixel = 0
+GuideX.Size = UDim2.new(1, 0, 0, 1)
+GuideX.Visible = false
+GuideX.ZIndex = 500
+GuideX.Parent = WMGui
+
+local GuideY = Instance.new("Frame")
+GuideY.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+GuideY.BackgroundTransparency = 0.65
+GuideY.BorderSizePixel = 0
+GuideY.Size = UDim2.new(0, 1, 1, 0)
+GuideY.Visible = false
+GuideY.ZIndex = 500
+GuideY.Parent = WMGui
+
+local WM = Instance.new("TextButton")
+WM.AnchorPoint = Vector2.new(0.5, 0.5)
+WM.Position = UDim2.new(0.6, 0, 0.05, 0)
+WM.Size = UDim2.new(0, 0, 0, 26)
+WM.AutomaticSize = Enum.AutomaticSize.X
+WM.BackgroundColor3 = ORIG_WM_BASE
+WM.BackgroundTransparency = 0.1
+WM.Text = ""
+WM.AutoButtonColor = false
+WM.Active = true
+WM.Parent = WMGui
+corner(WM, 14)
+local WMStroke = stroke(WM, ORIG_WM_STROKE, 1)
+
+local WMLay = Instance.new("UIListLayout")
+WMLay.FillDirection = Enum.FillDirection.Horizontal
+WMLay.VerticalAlignment = Enum.VerticalAlignment.Center
+WMLay.HorizontalAlignment = Enum.HorizontalAlignment.Center
+WMLay.Padding = UDim.new(0, 6)
+WMLay.Parent = WM
+
+local WMPad = Instance.new("UIPadding")
+WMPad.PaddingLeft = UDim.new(0, 10)
+WMPad.PaddingRight = UDim.new(0, 10)
+WMPad.Parent = WM
+
+local wmLabels = {}
+local function seg(txt, order)
+    local l = Instance.new("TextLabel")
+    l.BackgroundTransparency = 1
+    l.Size = UDim2.new(0, 0, 1, 0)
+    l.AutomaticSize = Enum.AutomaticSize.X
+    l.Font = Enum.Font.Code
+    l.Text = txt
+    l.TextSize = 12
+    l.TextColor3 = Color3.fromRGB(240, 245, 255)
+    l.LayoutOrder = order
+    l.Parent = WM
+    table.insert(wmLabels, l)
+    return l
+end
+
+seg("Danyagey1488.win", 1)
+seg("|", 2)
+local fpsLbl = seg("0 fps", 3)
+seg("|", 4)
+seg(playerName, 5)
+seg("|", 6)
+seg(deviceType, 7)
+seg("|", 8)
+local timeLbl = seg("00:00", 9)
+
+local wmDrag, wmStart, wmPos, wmMoved = false, nil, nil, false
+WM.InputBegan:Connect(function(i)
+    if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then
+        wmDrag = true; wmMoved = false
+        wmStart = i.Position; wmPos = WM.Position
+        GuideX.Visible, GuideY.Visible = true, true
+    end
+end)
+UIS.InputChanged:Connect(function(i)
+    if wmDrag and (i.UserInputType == Enum.UserInputType.MouseMovement or i.UserInputType == Enum.UserInputType.Touch) then
+        local d = i.Position - wmStart
+        if d.Magnitude > 3 then wmMoved = true end
+        WM.Position = UDim2.new(wmPos.X.Scale, wmPos.X.Offset + d.X, wmPos.Y.Scale, wmPos.Y.Offset + d.Y)
+        GuideX.Position = UDim2.new(0, 0, 0, WM.AbsolutePosition.Y + WM.AbsoluteSize.Y / 2)
+        GuideY.Position = UDim2.new(0, WM.AbsolutePosition.X + WM.AbsoluteSize.X / 2, 0, 0)
+    end
+end)
+UIS.InputEnded:Connect(function(i)
+    if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then
+        wmDrag = false
+        GuideX.Visible, GuideY.Visible = false, false
+    end
+end)
+WM.Activated:Connect(function()
+    if not wmMoved and MainFrame then MainFrame.Visible = not MainFrame.Visible end
+    wmMoved = false
+end)
+
+local fCount, lTick = 0, tick()
+RunService.RenderStepped:Connect(function()
+    fCount = fCount + 1
+    if tick() - lTick >= 1 then
+        fpsLbl.Text = fCount .. " fps"
+        timeLbl.Text = os.date("%H:%M")
+        fCount = 0; lTick = tick()
+    end
+end)
+
+-- =========================================================
+-- НАСТОЯЩИЕ 3D ПАРТИКЛЫ В МИРЕ РОБЛОКСА
+-- =========================================================
+local WorldPartFolder = Instance.new("Folder")
+WorldPartFolder.Name = "Danyagey3DParticles"
+WorldPartFolder.Parent = workspace
+
+local worldParticlesPool = {}
+local MAX_WORLD_PARTICLES = 100
+local RANGE_XZ = 80
+local SPAWN_HEIGHT = 60
+
+local ptConfigMap = {
+    ["Снежинки"] = { Shape = Enum.PartType.Ball,  Color = Color3.fromRGB(240, 248, 255), Mat = Enum.Material.Neon,         Size = Vector3.new(0.3, 0.3, 0.3) },
+    ["Доллары"]  = { Shape = Enum.PartType.Block, Color = Color3.fromRGB(85, 170, 127),  Mat = Enum.Material.SmoothPlastic,Size = Vector3.new(0.8, 0.05, 0.4) },
+    ["Молнии"]   = { Shape = Enum.PartType.Block, Color = Color3.fromRGB(255, 255, 0),   Mat = Enum.Material.Neon,         Size = Vector3.new(0.15, 1.2, 0.15) },
+    ["Свинки"]   = { Shape = Enum.PartType.Block, Color = Color3.fromRGB(255, 170, 255), Mat = Enum.Material.SmoothPlastic,Size = Vector3.new(1.0, 0.8, 1.0) }
+}
+
+for i = 1, MAX_WORLD_PARTICLES do
+    local part = Instance.new("Part")
+    part.Size = Vector3.new(1, 1, 1)
+    part.Transparency = 1
+    part.CanCollide = false
+    part.Anchored = true
+    part.CastShadow = false
+    part.Parent = WorldPartFolder
+
+    table.insert(worldParticlesPool, {
+        Part = part,
+        Pos = Vector3.new(0, -9999, 0),
+        RotX = math.random() * math.pi * 2,
+        RotY = math.random() * math.pi * 2,
+        RotZ = math.random() * math.pi * 2,
+        RSpX = math.random(-3, 3),
+        RSpY = math.random(-3, 3),
+        RSpZ = math.random(-3, 3),
+        Sp = math.random(10, 30),
+        DrX = math.random(-5, 5),
+        DrZ = math.random(-5, 5)
+    })
+end
+
+local lastPtType = nil
+
+local function updateWorldParticles(dt)
+    if ptType == "Выкл" or not ptConfigMap[ptType] then
+        for _, p in ipairs(worldParticlesPool) do
+            p.Part.CFrame = CFrame.new(0, -9999, 0)
+            p.Part.Transparency = 1
+        end
+        lastPtType = ptType
+        return
+    end
+
+    local char = LocalPlayer.Character
+    local root = char and char:FindFirstChild("HumanoidRootPart")
+    if not root then return end
+
+    local center = root.Position
+    local cfg = ptConfigMap[ptType]
+    local needVisualUpdate = (lastPtType ~= ptType)
+    lastPtType = ptType
+
+    local activeCount = math.clamp(tonumber(ptAmount) or 30, 1, MAX_WORLD_PARTICLES)
+    local globalSpeedMult = (tonumber(ptSpeed) or 50) / 50
+
+    for i, p in ipairs(worldParticlesPool) do
+        if i <= activeCount then
+            if needVisualUpdate then
+                p.Part.Shape = cfg.Shape
+                p.Part.Size = cfg.Size
+                p.Part.Color = cfg.Color
+                p.Part.Material = cfg.Mat
+                p.Part.Transparency = 0
+            end
+
+            p.Pos = p.Pos - Vector3.new(p.DrX * dt * 0.5, p.Sp * globalSpeedMult * dt, p.DrZ * dt * 0.5)
+
+            p.RotX = p.RotX + p.RSpX * dt
+            p.RotY = p.RotY + p.RSpY * dt
+            p.RotZ = p.RotZ + p.RSpZ * dt
+
+            local diffX = p.Pos.X - center.X
+            local diffZ = p.Pos.Z - center.Z
+
+            if p.Pos.Y < center.Y - 15 or math.abs(diffX) > RANGE_XZ or math.abs(diffZ) > RANGE_XZ then
+                p.Pos = Vector3.new(
+                    center.X + math.random(-RANGE_XZ, RANGE_XZ),
+                    center.Y + SPAWN_HEIGHT + math.random(0, 20),
+                    center.Z + math.random(-RANGE_XZ, RANGE_XZ)
+                )
+            end
+
+            p.Part.CFrame = CFrame.new(p.Pos) * CFrame.Angles(p.RotX, p.RotY, p.RotZ)
+        else
+            p.Part.CFrame = CFrame.new(0, -9999, 0)
+            p.Part.Transparency = 1
+        end
+    end
+end
+
+getgenv().AeroWorldParticlesLoop = RunService.RenderStepped:Connect(updateWorldParticles)
+
+-- =========================================================
+-- БАЗОВЫЕ МОДАЛКИ
+-- =========================================================
+local function createModal(name, title, width, height)
+    local M = Instance.new("Frame")
+    M.Name = name
+    M.Size = UDim2.fromOffset(width, height)
+    M.AnchorPoint = Vector2.new(0.5, 0.5)
+    M.Position = UDim2.new(0.5, 0, 0.5, 0)
+    M.BackgroundColor3 = ORIG_GUI_MODAL
+    M.BorderSizePixel = 0
+    M.Visible = false
+    M.ZIndex = 200
+    M.Active = true
+    M.Parent = MainGui
+    corner(M, 10)
+    stroke(M, Color3.fromRGB(110, 130, 180), 1.5)
+
+    local MHead = Instance.new("TextButton")
+    MHead.Size = UDim2.new(1, 0, 0, 30)
+    MHead.BackgroundColor3 = Color3.fromRGB(52, 58, 76)
+    MHead.Text = "  " .. title
+    MHead.Font = Enum.Font.Code
+    MHead.TextSize = 12
+    MHead.TextColor3 = Color3.fromRGB(255, 255, 255)
+    MHead.TextXAlignment = Enum.TextXAlignment.Left
+    MHead.AutoButtonColor = false
+    MHead.ZIndex = 201
+    MHead.Parent = M
+    corner(MHead, 10)
+
+    local MHeadCover = Instance.new("Frame")
+    MHeadCover.Position = UDim2.new(0, 0, 1, -8)
+    MHeadCover.Size = UDim2.new(1, 0, 0, 8)
+    MHeadCover.BackgroundColor3 = MHead.BackgroundColor3
+    MHeadCover.BorderSizePixel = 0
+    MHeadCover.ZIndex = 201
+    MHeadCover.Parent = MHead
+
+    local MClose = Instance.new("TextButton")
+    MClose.Size = UDim2.new(0, 22, 0, 22)
+    MClose.Position = UDim2.new(1, -26, 0.5, 0)
+    MClose.AnchorPoint = Vector2.new(0, 0.5)
+    MClose.BackgroundColor3 = Color3.fromRGB(150, 55, 55)
+    MClose.Text = "X"
+    MClose.Font = Enum.Font.Code
+    MClose.TextSize = 13
+    MClose.TextColor3 = Color3.fromRGB(255, 255, 255)
+    MClose.AutoButtonColor = false
+    MClose.ZIndex = 202
+    MClose.Parent = MHead
+    corner(MClose, 5)
+    MClose.MouseButton1Click:Connect(function() M.Visible = false end)
+
+    local MBody = Instance.new("Frame")
+    MBody.Position = UDim2.new(0, 0, 0, 30)
+    MBody.Size = UDim2.new(1, 0, 1, -30)
+    MBody.BackgroundTransparency = 1
+    MBody.ZIndex = 200
+    MBody.Active = true
+    MBody.Parent = M
+    vlist(MBody, 8)
+    pad(MBody, 10, 10, 12, 12)
+
+    local mDrag, mStart, mPos = false, nil, nil
+    local function dragStart(i)
+        if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then
+            mDrag = true; mStart = i.Position; mPos = M.Position
+        end
+    end
+    MHead.InputBegan:Connect(dragStart)
+    MBody.InputBegan:Connect(dragStart)
+    M.InputBegan:Connect(dragStart)
+
+    UIS.InputChanged:Connect(function(i)
+        if mDrag and (i.UserInputType == Enum.UserInputType.MouseMovement or i.UserInputType == Enum.UserInputType.Touch) then
+            local d = i.Position - mStart
+            M.Position = UDim2.new(mPos.X.Scale, mPos.X.Offset + d.X, mPos.Y.Scale, mPos.Y.Offset + d.Y)
+        end
+    end)
+    UIS.InputEnded:Connect(function(i)
+        if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then
+            mDrag = false
+        end
+    end)
+
+    return M, MBody, MHead, MClose
+end
+
+-- =========================================================
+-- МОДАЛКА НАСТРОЙКИ ПАРТИКЛОВ
+-- =========================================================
+local PartModal, PBody, PHead, PClose = createModal("PartModal", "⚙️ Настройка частиц", 240, 180)
+
+local pSpdLbl = Instance.new("TextLabel")
+pSpdLbl.Size = UDim2.new(1, 0, 0, 18)
+pSpdLbl.BackgroundTransparency = 1
+pSpdLbl.Text = "Скорость падения (10-200):"
+pSpdLbl.Font = Enum.Font.Code
+pSpdLbl.TextSize = 13
+pSpdLbl.TextColor3 = Color3.fromRGB(255, 255, 255)
+pSpdLbl.TextXAlignment = Enum.TextXAlignment.Left
+pSpdLbl.ZIndex = 202
+pSpdLbl.Parent = PBody
+
+local pSpdBox = Instance.new("TextBox")
+pSpdBox.Size = UDim2.new(1, 0, 0, 30)
+pSpdBox.BackgroundColor3 = Color3.fromRGB(26, 28, 36)
+pSpdBox.Text = tostring(ptSpeed)
+pSpdBox.Font = Enum.Font.Code
+pSpdBox.TextSize = 14
+pSpdBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+pSpdBox.ZIndex = 202
+pSpdBox.Parent = PBody
+corner(pSpdBox, 6)
+stroke(pSpdBox, Color3.fromRGB(80, 85, 105), 1)
+
+local pAmtLbl = Instance.new("TextLabel")
+pAmtLbl.Size = UDim2.new(1, 0, 0, 18)
+pAmtLbl.BackgroundTransparency = 1
+pAmtLbl.Text = "Количество (1-100):"
+pAmtLbl.Font = Enum.Font.Code
+pAmtLbl.TextSize = 13
+pAmtLbl.TextColor3 = Color3.fromRGB(255, 255, 255)
+pAmtLbl.TextXAlignment = Enum.TextXAlignment.Left
+pAmtLbl.ZIndex = 202
+pAmtLbl.Parent = PBody
+
+local pAmtBox = Instance.new("TextBox")
+pAmtBox.Size = UDim2.new(1, 0, 0, 30)
+pAmtBox.BackgroundColor3 = Color3.fromRGB(26, 28, 36)
+pAmtBox.Text = tostring(ptAmount)
+pAmtBox.Font = Enum.Font.Code
+pAmtBox.TextSize = 14
+pAmtBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+pAmtBox.ZIndex = 202
+pAmtBox.Parent = PBody
+corner(pAmtBox, 6)
+stroke(pAmtBox, Color3.fromRGB(80, 85, 105), 1)
+
+pSpdBox.FocusLost:Connect(function()
+    local val = tonumber(pSpdBox.Text)
+    if val then ptSpeed = math.clamp(val, 10, 200) else ptSpeed = 50 end
+    pSpdBox.Text = tostring(ptSpeed)
+    saveCfg()
+end)
+
+pAmtBox.FocusLost:Connect(function()
+    local val = tonumber(pAmtBox.Text)
+    if val then ptAmount = math.clamp(val, 1, 100) else ptAmount = 30 end
+    pAmtBox.Text = tostring(ptAmount)
+    saveCfg()
+end)
+
+-- =========================================================
+-- НАСТРОЙКИ: ПАРТИКЛЫ
+-- =========================================================
+local pRowLbl = Instance.new("TextLabel")
+pRowLbl.Size = UDim2.new(0.92, 0, 0, 30)
+pRowLbl.BackgroundTransparency = 1
+pRowLbl.Text = "Партиклы: Создает красивые 3D частицы по миру (снежинки, деньги, молнии, свинки)."
+pRowLbl.Font = Enum.Font.Code
+pRowLbl.TextSize = 11
+pRowLbl.TextColor3 = Color3.fromRGB(215, 220, 235)
+pRowLbl.TextXAlignment = Enum.TextXAlignment.Left
+pRowLbl.TextWrapped = true
+pRowLbl.ZIndex = 3
+pRowLbl.Parent = SettingsTab
+
+local DD_P_Row = Instance.new("Frame")
+DD_P_Row.Size = UDim2.new(0.92, 0, 0, 34)
+DD_P_Row.BackgroundTransparency = 1
+DD_P_Row.ZIndex = 3
+DD_P_Row.Parent = SettingsTab
+hlist(DD_P_Row, 6)
+
+local P_DD = Instance.new("Frame")
+P_DD.Size = UDim2.new(1, -40, 1, 0)
+P_DD.BackgroundColor3 = Color3.fromRGB(26, 28, 36)
+P_DD.ZIndex = 3
+P_DD.Parent = DD_P_Row
+corner(P_DD, 8)
+stroke(P_DD, Color3.fromRGB(45, 48, 60), 1)
+
+local P_DDBtn = Instance.new("TextButton")
+P_DDBtn.Size = UDim2.new(1, 0, 1, 0)
+P_DDBtn.BackgroundTransparency = 1
+P_DDBtn.Text = "  " .. ptType .. " ▾"
+P_DDBtn.Font = Enum.Font.Code
+P_DDBtn.TextSize = 12
+P_DDBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+P_DDBtn.TextXAlignment = Enum.TextXAlignment.Left
+P_DDBtn.AutoButtonColor = false
+P_DDBtn.ZIndex = 4
+P_DDBtn.Parent = P_DD
+
+local P_GearBtn = Instance.new("TextButton")
+P_GearBtn.Size = UDim2.new(0, 34, 1, 0)
+P_GearBtn.BackgroundColor3 = Color3.fromRGB(40, 44, 58)
+P_GearBtn.Text = "⚙️"
+P_GearBtn.Font = Enum.Font.Code
+P_GearBtn.TextSize = 14
+P_GearBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+P_GearBtn.AutoButtonColor = false
+P_GearBtn.ZIndex = 4
+P_GearBtn.Parent = DD_P_Row
+corner(P_GearBtn, 8)
+stroke(P_GearBtn, Color3.fromRGB(80, 90, 115), 1)
+
+P_GearBtn.MouseButton1Click:Connect(function()
+    PartModal.Visible = not PartModal.Visible
+    if PartModal.Visible then PartModal.Position = UDim2.new(0.5, 0, 0.5, 0) end
+end)
+
+local POpts = Instance.new("ScrollingFrame")
+POpts.Size = UDim2.new(0.92, 0, 0, 0)
+POpts.BackgroundColor3 = Color3.fromRGB(20, 22, 30)
+POpts.Visible = false
+POpts.CanvasSize = UDim2.new(0, 0, 0, 0)
+POpts.AutomaticCanvasSize = Enum.AutomaticSize.Y
+POpts.ScrollBarThickness = 2
+POpts.ZIndex = 10
+POpts.Parent = SettingsTab
+corner(POpts, 8)
+stroke(POpts, Color3.fromRGB(50, 54, 70), 1)
+vlist(POpts, 0)
+
+local ptTypesList = {"Выкл", "Снежинки", "Доллары", "Молнии", "Свинки"}
+local pDdOpen = false
+
+P_DDBtn.MouseButton1Click:Connect(function()
+    pDdOpen = not pDdOpen
+    POpts.Visible = pDdOpen
+    POpts.Size = pDdOpen and UDim2.new(0.92, 0, 0, 140) or UDim2.new(0.92, 0, 0, 0)
+end)
+
+for _, typ in ipairs(ptTypesList) do
+    local b = Instance.new("TextButton")
+    b.Size = UDim2.new(1, 0, 0, 28)
+    b.BackgroundTransparency = 1
+    b.Text = "  " .. typ
+    b.Font = Enum.Font.Code
+    b.TextSize = 12
+    b.TextColor3 = Color3.fromRGB(220, 225, 235)
+    b.TextXAlignment = Enum.TextXAlignment.Left
+    b.AutoButtonColor = false
+    b.ZIndex = 11
+    b.Parent = POpts
+    b.MouseButton1Click:Connect(function()
+        ptType = typ
+        P_DDBtn.Text = "  " .. typ .. " ▾"
+        POpts.Visible = false
+        pDdOpen = false
+        saveCfg()
+    end)
+end
+
+-- =========================================================
+-- НАСТРОЙКИ: CUSTOM FOG
+-- =========================================================
+local fRowLbl = Instance.new("TextLabel")
+fRowLbl.Size = UDim2.new(0.92, 0, 0, 30)
+fRowLbl.BackgroundTransparency = 1
+fRowLbl.Text = "Custom fog: Меняет цвет неба и освещение мира (северное сияние, радуга, киберпанк и др.)."
+fRowLbl.Font = Enum.Font.Code
+fRowLbl.TextSize = 11
+fRowLbl.TextColor3 = Color3.fromRGB(215, 220, 235)
+fRowLbl.TextXAlignment = Enum.TextXAlignment.Left
+fRowLbl.TextWrapped = true
+fRowLbl.ZIndex = 3
+fRowLbl.Parent = SettingsTab
+
+local DD_F_Row = Instance.new("Frame")
+DD_F_Row.Size = UDim2.new(0.92, 0, 0, 34)
+DD_F_Row.BackgroundTransparency = 1
+DD_F_Row.ZIndex = 3
+DD_F_Row.Parent = SettingsTab
+
+local F_DD = Instance.new("Frame")
+F_DD.Size = UDim2.new(1, 0, 1, 0)
+F_DD.BackgroundColor3 = Color3.fromRGB(26, 28, 36)
+F_DD.ZIndex = 3
+F_DD.Parent = DD_F_Row
+corner(F_DD, 8)
+local F_Stroke = stroke(F_DD, Color3.fromRGB(45, 48, 60), 1)
+
+local F_DDBtn = Instance.new("TextButton")
+F_DDBtn.Size = UDim2.new(1, 0, 1, 0)
+F_DDBtn.BackgroundTransparency = 1
+F_DDBtn.Text = "  " .. currentFogName .. " ▾"
+F_DDBtn.Font = Enum.Font.Code
+F_DDBtn.TextSize = 12
+F_DDBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+F_DDBtn.TextXAlignment = Enum.TextXAlignment.Left
+F_DDBtn.AutoButtonColor = false
+F_DDBtn.ZIndex = 4
+F_DDBtn.Parent = F_DD
+
+local FOpts = Instance.new("ScrollingFrame")
+FOpts.Size = UDim2.new(0.92, 0, 0, 0)
+FOpts.BackgroundColor3 = Color3.fromRGB(20, 22, 30)
+FOpts.Visible = false
+FOpts.CanvasSize = UDim2.new(0, 0, 0, 0)
+FOpts.AutomaticCanvasSize = Enum.AutomaticSize.Y
+FOpts.ScrollBarThickness = 2
+FOpts.ZIndex = 15
+FOpts.Parent = SettingsTab
+corner(FOpts, 8)
+stroke(FOpts, Color3.fromRGB(50, 54, 70), 1)
+vlist(FOpts, 0)
+
+local fogPresets = {
+    "Выкл",
+    "Северное сияние 🌌",
+    "Радуга 🌈",
+    "Кровавая луна 🩸",
+    "Киберпанк 🌃",
+    "Токсичный ☢️",
+    "Бездна 🕳️",
+    "Рассвет 🌅"
+}
+
+local fDdOpen = false
+
+F_DDBtn.MouseButton1Click:Connect(function()
+    fDdOpen = not fDdOpen
+    FOpts.Visible = fDdOpen
+    FOpts.Size = fDdOpen and UDim2.new(0.92, 0, 0, 176) or UDim2.new(0.92, 0, 0, 0)
+end)
+
+local function applyFogPreset(preset)
+    if getgenv().AeroFogLoop then getgenv().AeroFogLoop:Disconnect(); getgenv().AeroFogLoop = nil end
+    CustomCC.Enabled = false
+    CustomBloom.Enabled = false
+
+    local orig = getgenv().DanyageyOrigLighting
+    if not orig then return end
+
+    if preset == "Выкл" then
+        Lighting.FogColor = orig.FogColor
+        Lighting.FogEnd = orig.FogEnd
+        Lighting.Ambient = orig.Ambient
+        Lighting.OutdoorAmbient = orig.OutdoorAmbient
+        Lighting.ClockTime = orig.ClockTime
+    elseif preset == "Северное сияние 🌌" then
+        Lighting.ClockTime = 0
+        Lighting.FogEnd = 800
+        CustomCC.Enabled = true
+        CustomCC.Contrast = 0.2
+        CustomCC.Saturation = 0.5
+        CustomCC.TintColor = Color3.fromRGB(150, 255, 200)
+        CustomBloom.Enabled = true
+        CustomBloom.Intensity = 0.6
+        getgenv().AeroFogLoop = RunService.RenderStepped:Connect(function()
+            local t = tick() * 0.2
+            Lighting.FogColor = Color3.fromHSV(math.noise(t)*0.15 + 0.55, 0.8, 0.6)
+            Lighting.Ambient = Color3.fromHSV(math.noise(t+10)*0.15 + 0.55, 0.8, 0.3)
+            Lighting.OutdoorAmbient = Color3.fromHSV(math.noise(t+20)*0.15 + 0.55, 0.8, 0.3)
+        end)
+    elseif preset == "Радуга 🌈" then
+        Lighting.ClockTime = 12
+        Lighting.FogEnd = 800
+        CustomBloom.Enabled = true
+        CustomBloom.Intensity = 0.3
+        getgenv().AeroFogLoop = RunService.RenderStepped:Connect(function()
+            local h = (tick() % 5) / 5
+            local color = Color3.fromHSV(h, 0.7, 1)
+            Lighting.FogColor = color
+            Lighting.Ambient = color
+            Lighting.OutdoorAmbient = color
+        end)
+    elseif preset == "Кровавая луна 🩸" then
+        Lighting.ClockTime = 0
+        Lighting.FogEnd = 300
+        Lighting.FogColor = Color3.fromRGB(120, 10, 10)
+        Lighting.Ambient = Color3.fromRGB(50, 0, 0)
+        Lighting.OutdoorAmbient = Color3.fromRGB(80, 10, 10)
+        CustomCC.Enabled = true
+        CustomCC.Contrast = 0.3
+        CustomCC.Saturation = 0.8
+        CustomCC.TintColor = Color3.fromRGB(255, 150, 150)
+    elseif preset == "Киберпанк 🌃" then
+        Lighting.ClockTime = 2
+        Lighting.FogEnd = 400
+        Lighting.FogColor = Color3.fromRGB(255, 0, 150)
+        Lighting.Ambient = Color3.fromRGB(0, 255, 255)
+        Lighting.OutdoorAmbient = Color3.fromRGB(150, 0, 255)
+        CustomBloom.Enabled = true
+        CustomBloom.Intensity = 0.8
+        CustomBloom.Threshold = 1.5
+    elseif preset == "Токсичный ☢️" then
+        Lighting.ClockTime = 14
+        Lighting.FogEnd = 250
+        Lighting.FogColor = Color3.fromRGB(80, 255, 50)
+        Lighting.Ambient = Color3.fromRGB(50, 100, 20)
+        Lighting.OutdoorAmbient = Color3.fromRGB(100, 200, 50)
+        CustomCC.Enabled = true
+        CustomCC.Contrast = 0.1
+        CustomCC.TintColor = Color3.fromRGB(200, 255, 180)
+    elseif preset == "Бездна 🕳️" then
+        Lighting.ClockTime = 0
+        Lighting.FogEnd = 50
+        Lighting.FogColor = Color3.fromRGB(0, 0, 0)
+        Lighting.Ambient = Color3.fromRGB(0, 0, 0)
+        Lighting.OutdoorAmbient = Color3.fromRGB(0, 0, 0)
+    elseif preset == "Рассвет 🌅" then
+        Lighting.ClockTime = 6.5
+        Lighting.FogEnd = 800
+        Lighting.FogColor = Color3.fromRGB(255, 150, 100)
+        Lighting.Ambient = Color3.fromRGB(255, 100, 150)
+        Lighting.OutdoorAmbient = Color3.fromRGB(255, 200, 150)
+        CustomBloom.Enabled = true
+        CustomBloom.Intensity = 0.3
+    end
+end
+
+for _, p in ipairs(fogPresets) do
+    local b = Instance.new("TextButton")
+    b.Size = UDim2.new(1, 0, 0, 28)
+    b.BackgroundTransparency = 1
+    b.Text = "  " .. p
+    b.Font = Enum.Font.Code
+    b.TextSize = 12
+    b.TextColor3 = Color3.fromRGB(220, 225, 235)
+    b.TextXAlignment = Enum.TextXAlignment.Left
+    b.AutoButtonColor = false
+    b.ZIndex = 16
+    b.Parent = FOpts
+    b.MouseButton1Click:Connect(function()
+        currentFogName = p
+        F_DDBtn.Text = "  " .. p .. " ▾"
+        FOpts.Visible = false
+        fDdOpen = false
+        applyFogPreset(p)
+        saveCfg()
+    end)
+end
+
+if currentFogName ~= "Выкл" then applyFogPreset(currentFogName) end
+
+-- =========================================================
+-- НАСТРОЙКИ РАЗМЕРА + ЦВЕТ
+-- =========================================================
+local Modal, MBody, MHead, MClose = createModal("ResizeModal", "📐 Размер GUI", isMobile and 230 or 250, isMobile and 245 or 260)
+
+local sizeLbl = Instance.new("TextLabel")
+sizeLbl.Size = UDim2.new(1, 0, 0, 20)
+sizeLbl.BackgroundTransparency = 1
+sizeLbl.Text = math.floor(cfgSize.X) .. " × " .. math.floor(cfgSize.Y)
+sizeLbl.Font = Enum.Font.Code
+sizeLbl.TextSize = 14
+sizeLbl.TextColor3 = Color3.fromRGB(225, 235, 255)
+sizeLbl.ZIndex = 202
+sizeLbl.Parent = MBody
+
+local SFrame = Instance.new("Frame")
+SFrame.Size = UDim2.new(1, 0, 0, 24)
+SFrame.BackgroundTransparency = 1
+SFrame.ZIndex = 202
+SFrame.Parent = MBody
+
+local STrack = Instance.new("Frame")
+STrack.Size = UDim2.new(1, 0, 0, 8)
+STrack.Position = UDim2.new(0, 0, 0.5, 0)
+STrack.AnchorPoint = Vector2.new(0, 0.5)
+STrack.BackgroundColor3 = Color3.fromRGB(60, 66, 84)
+STrack.BorderSizePixel = 0
+STrack.ZIndex = 202
+STrack.Parent = SFrame
+corner(STrack, 4)
+
+local SFill = Instance.new("Frame")
+SFill.Size = UDim2.new(0.5, 0, 1, 0)
+SFill.BackgroundColor3 = Color3.fromRGB(90, 150, 255)
+SFill.BorderSizePixel = 0
+SFill.ZIndex = 202
+SFill.Parent = STrack
+corner(SFill, 4)
+
+local SKnob = Instance.new("TextButton")
+SKnob.Size = UDim2.new(0, 20, 0, 20)
+SKnob.Position = UDim2.new(0.5, 0, 0.5, 0)
+SKnob.AnchorPoint = Vector2.new(0.5, 0.5)
+SKnob.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+SKnob.Text = ""
+SKnob.AutoButtonColor = false
+SKnob.BorderSizePixel = 0
+SKnob.ZIndex = 203
+SKnob.Parent = SFrame
+corner(SKnob, 10)
+stroke(SKnob, Color3.fromRGB(90, 150, 255), 2)
+
+local function applySize(w)
+    w = math.clamp(w, MIN_W, MAX_W)
+    local h = math.floor(w * BASE_RATIO)
+    if h > MAX_H_LIMIT then h = MAX_H_LIMIT; w = math.floor(h / BASE_RATIO) end
+    if w > MAX_W_LIMIT then w = MAX_W_LIMIT; h = math.floor(w * BASE_RATIO) end
+    MainFrame.Size = UDim2.fromOffset(w, h)
+    cfgSize = Vector2.new(w, h)
+    sizeLbl.Text = w .. " × " .. h
+end
+
+local function setSlider(v, applyToFrame)
+    v = math.clamp(v, 0, 1)
+    SFill.Size = UDim2.new(v, 0, 1, 0)
+    SKnob.Position = UDim2.new(v, 0, 0.5, 0)
+    if applyToFrame then applySize(math.floor(MIN_W + (MAX_W - MIN_W) * v)) end
+end
+setSlider((cfgSize.X - MIN_W) / (MAX_W - MIN_W), false)
+
+local sDrag = false
+local function sliderTo(x)
+    local ax = STrack.AbsolutePosition.X
+    local aw = STrack.AbsoluteSize.X
+    if aw <= 0 then return end
+    setSlider((x - ax) / aw, true)
+end
+
+SKnob.InputBegan:Connect(function(i)
+    if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then sDrag = true end
+end)
+STrack.InputBegan:Connect(function(i)
+    if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then
+        sDrag = true; sliderTo(i.Position.X)
+    end
+end)
+UIS.InputChanged:Connect(function(i)
+    if sDrag and (i.UserInputType == Enum.UserInputType.MouseMovement or i.UserInputType == Enum.UserInputType.Touch) then
+        sliderTo(i.Position.X)
+    end
+end)
+UIS.InputEnded:Connect(function(i)
+    if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then
+        if sDrag then sDrag = false; saveCfg() end
+    end
+end)
+
+local lockBtn = Instance.new("TextButton")
+lockBtn.Size = UDim2.new(1, 0, 0, 26)
+lockBtn.BackgroundColor3 = cfgLocked and Color3.fromRGB(120, 45, 45) or Color3.fromRGB(60, 66, 84)
+lockBtn.Text = cfgLocked and "🔒 Зафиксировано" or "🔓 Свободно"
+lockBtn.Font = Enum.Font.Code
+lockBtn.TextSize = 12
+lockBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+lockBtn.AutoButtonColor = false
+lockBtn.ZIndex = 202
+lockBtn.Parent = MBody
+corner(lockBtn, 6)
+lockBtn.MouseButton1Click:Connect(function()
+    cfgLocked = not cfgLocked
+    lockBtn.Text = cfgLocked and "🔒 Зафиксировано" or "🔓 Свободно"
+    lockBtn.BackgroundColor3 = cfgLocked and Color3.fromRGB(120, 45, 45) or Color3.fromRGB(60, 66, 84)
+    saveCfg()
+end)
+
+local function presetSize(scale)
+    local w = math.clamp(math.floor(viewport.X * scale * 0.9), MIN_W, MAX_W)
+    local h = math.floor(w * BASE_RATIO)
+    if h > MAX_H_LIMIT then h = MAX_H_LIMIT; w = math.floor(h / BASE_RATIO) end
+    return w, h
+end
+local pw1, ph1 = presetSize(0.55)
+local pw2, ph2 = presetSize(0.75)
+local pw3, ph3 = presetSize(0.92)
+local presets = { {name = "Малая", w = pw1, h = ph1}, {name = "Средняя", w = pw2, h = ph2}, {name = "Большая", w = pw3, h = ph3} }
+
+local pRow = Instance.new("Frame")
+pRow.Size = UDim2.new(1, 0, 0, 26)
+pRow.BackgroundTransparency = 1
+pRow.ZIndex = 202
+pRow.Parent = MBody
+hlist(pRow, 4)
+
+for _, p in ipairs(presets) do
+    local b = Instance.new("TextButton")
+    b.Size = UDim2.new(0.33, -3, 1, 0)
+    b.BackgroundColor3 = Color3.fromRGB(60, 66, 84)
+    b.Text = p.name
+    b.Font = Enum.Font.Code
+    b.TextSize = 11
+    b.TextColor3 = Color3.fromRGB(235, 240, 250)
+    b.AutoButtonColor = false
+    b.ZIndex = 203
+    b.Parent = pRow
+    corner(b, 5)
+    b.MouseButton1Click:Connect(function()
+        applySize(p.w)
+        setSlider((cfgSize.X - MIN_W) / (MAX_W - MIN_W), false)
+        saveCfg()
+    end)
+end
+
+headBtn("⚙️", function()
+    Modal.Visible = not Modal.Visible
+    if Modal.Visible then Modal.Position = UDim2.new(0.5, 0, 0.5, 0) end
+end)
+headBtn("-", function() MainFrame.Visible = false end)
+headBtn("X", function()
+    MainGui:Destroy()
+    WMGui:Destroy()
+    local wp = workspace:FindFirstChild("Danyagey3DParticles")
+    if wp then wp:Destroy() end
+    if Lighting:FindFirstChild("DanyageyCC") then Lighting.DanyageyCC:Destroy() end
+    if Lighting:FindFirstChild("DanyageyBloom") then Lighting.DanyageyBloom:Destroy() end
+    if getgenv().DanyageyOrigLighting then
+        Lighting.FogColor = getgenv().DanyageyOrigLighting.FogColor
+        Lighting.FogEnd = getgenv().DanyageyOrigLighting.FogEnd
+        Lighting.Ambient = getgenv().DanyageyOrigLighting.Ambient
+        Lighting.OutdoorAmbient = getgenv().DanyageyOrigLighting.OutdoorAmbient
+        Lighting.ClockTime = getgenv().DanyageyOrigLighting.ClockTime
+    end
+    if getgenv().AeroSnowLoop then getgenv().AeroSnowLoop:Disconnect() end
+    if getgenv().AeroColorLoop then getgenv().AeroColorLoop:Disconnect() end
+    if getgenv().AeroWorldParticlesLoop then getgenv().AeroWorldParticlesLoop:Disconnect() end
+    if getgenv().AeroFogLoop then getgenv().AeroFogLoop:Disconnect() end
+end)
+
+-- РЕСАЙЗ УГЛОМ
+local Resizer = Instance.new("TextLabel")
+Resizer.BackgroundTransparency = 1
+Resizer.Text = "⌟"
+Resizer.TextSize = 22
+Resizer.TextColor3 = Color3.fromRGB(180, 185, 210)
+Resizer.Size = UDim2.new(0, 26, 0, 26)
+Resizer.ZIndex = 300
+Resizer.Parent = WMGui
+
+RunService.RenderStepped:Connect(function()
+    if MainFrame.Visible then
+        Resizer.Visible = true
+        Resizer.Position = UDim2.new(0, MainFrame.AbsolutePosition.X + MainFrame.AbsoluteSize.X - 26, 0, MainFrame.AbsolutePosition.Y + MainFrame.AbsoluteSize.Y - 26)
+    else
+        Resizer.Visible = false
+    end
+end)
+
+local dragging, resizing = false, false
+local dragStart, startPos, startSize
+
+UIS.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        if MainFrame.Visible then
+            local pos = input.Position
+            local fx, fy = MainFrame.AbsolutePosition.X, MainFrame.AbsolutePosition.Y
+            local fw, fh = MainFrame.AbsoluteSize.X, MainFrame.AbsoluteSize.Y
+
+            if not cfgLocked and pos.X >= fx + fw - 40 and pos.X <= fx + fw + 10 and pos.Y >= fy + fh - 40 and pos.Y <= fy + fh + 10 then
+                resizing = true; dragStart = pos; startSize = MainFrame.AbsoluteSize; return
+            end
+
+            if pos.X >= fx and pos.X <= fx + fw - 115 and pos.Y >= fy and pos.Y <= fy + 45 then
+                dragging = true; dragStart = pos; startPos = MainFrame.Position
+                GuideX.Visible, GuideY.Visible = true, true
+                GuideX.Position = UDim2.new(0, 0, 0, MainFrame.AbsolutePosition.Y + MainFrame.AbsoluteSize.Y / 2)
+                GuideY.Position = UDim2.new(0, MainFrame.AbsolutePosition.X + MainFrame.AbsoluteSize.X / 2, 0, 0)
+            end
+        end
+    end
+end)
+
+UIS.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+        if resizing and MainFrame then
+            local d = input.Position - dragStart
+            local nw = math.clamp(startSize.X + d.X, MIN_W, MAX_W_LIMIT)
+            local nh = math.max(260, math.min(startSize.Y + d.Y, MAX_H_LIMIT))
+            MainFrame.Size = UDim2.new(0, nw, 0, nh)
+            cfgSize = Vector2.new(nw, nh)
+            sizeLbl.Text = math.floor(nw) .. " × " .. math.floor(nh)
+            setSlider((nw - MIN_W) / (MAX_W - MIN_W), false)
+        elseif dragging and MainFrame then
+            local d = input.Position - dragStart
+            MainFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + d.X, startPos.Y.Scale, startPos.Y.Offset + d.Y)
+            GuideX.Position = UDim2.new(0, 0, 0, MainFrame.AbsolutePosition.Y + MainFrame.AbsoluteSize.Y / 2)
+            GuideY.Position = UDim2.new(0, MainFrame.AbsolutePosition.X + MainFrame.AbsoluteSize.X / 2, 0, 0)
+        end
+    end
+end)
+
+UIS.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        if resizing then saveCfg() end
+        if dragging then GuideX.Visible, GuideY.Visible = false, false end
+        dragging, resizing = false, false
+    end
+end)
+
+-- =========================================================
+-- ТЕМА (ПРИМЕНЕНИЕ И НАСТРОЙКИ)
+-- =========================================================
+local ThemeModalObj, TBody, THead, TClose = createModal("ThemeModal", "🎨 Куда применять цвет", isMobile and 240 or 260, 190)
+local ThemeModal = ThemeModalObj
+
+local targetBtnsRef = {}
+local currentBase = ORIG_GUI_BASE
+local currentStroke = ORIG_GUI_STROKE
+
+local function applyThemeGUI(base, st)
+    MainFrame.BackgroundColor3 = base
+    MainStroke.Color = st
+    Header.BackgroundColor3 = Color3.new(math.max(0, base.R*255 - 10)/255, math.max(0, base.G*255 - 10)/255, math.max(0, base.B*255 - 10)/255)
+    Sidebar.BackgroundColor3 = Color3.new(math.max(0, base.R*255 - 15)/255, math.max(0, base.G*255 - 15)/255, math.max(0, base.B*255 - 15)/255)
+
+    local modalCol = Color3.new(math.min(1, base.R + 0.1), math.min(1, base.G + 0.1), math.min(1, base.B + 0.13))
+    Modal.BackgroundColor3 = modalCol
+    ThemeModalObj.BackgroundColor3 = modalCol
+    PartModal.BackgroundColor3 = modalCol
+
+    for _, d in pairs(MainFrame:GetDescendants()) do
+        if d.Name ~= "Snowflake" then
+            if d:IsA("TextButton") and d.Name ~= "TabButton" and d ~= MHead and d ~= MClose and d ~= THead and d ~= TClose and d ~= PHead and d ~= PClose then
+                d.BackgroundColor3 = Color3.new(math.min(1, base.R + 0.05), math.min(1, base.G + 0.05), math.min(1, base.B + 0.05))
+            elseif d:IsA("Frame") and d ~= HeaderCover then
+                d.BackgroundColor3 = Color3.new(math.min(1, base.R + 0.02), math.min(1, base.G + 0.02), math.min(1, base.B + 0.02))
+            elseif d:IsA("ScrollingFrame") then
+                d.BackgroundColor3 = Color3.new(math.max(0, base.R - 0.02), math.max(0, base.G - 0.02), math.max(0, base.B - 0.02))
+            end
+        end
+    end
+
+    for i = 1, 10 do
+        local fBtn = FeaturesTab:FindFirstChild("FunctionButton_" .. i)
+        if fBtn then
+            fBtn.BackgroundColor3 = Color3.new(math.min(1, base.R + 0.05), math.min(1, base.G + 0.05), math.min(1, base.B + 0.05))
+            local s = fBtn:FindFirstChild("UIStroke")
+            if s then s.Color = st end
+        end
+    end
+end
+
+for i = 1, 10 do
+    local fBtn = Instance.new("TextButton")
+    fBtn.Name = "FunctionButton_" .. i
+    fBtn.Parent = FeaturesTab
+    fBtn.Size = UDim2.new(0.92, 0, 0, 42)
+    fBtn.BackgroundColor3 = Color3.fromRGB(26, 28, 36)
+    fBtn.Text = "⚡ Функция № " .. i
+    fBtn.Font = Enum.Font.Code
+    fBtn.TextSize = 13
+    fBtn.TextColor3 = Color3.fromRGB(220, 225, 235)
+    corner(fBtn, 8)
+    stroke(fBtn, Color3.fromRGB(45, 48, 60), 1)
+end
+
+local function applyThemeWM(base, st)
+    WM.BackgroundColor3 = base
+    WMStroke.Color = st
+    local lum = 0.299 * base.R + 0.587 * base.G + 0.114 * base.B
+    local textCol = lum < 0.5 and Color3.fromRGB(245, 250, 255) or Color3.fromRGB(25, 25, 30)
+    for _, l in ipairs(wmLabels) do l.TextColor3 = textCol end
+end
+
+local function resetAllToOriginal()
+    applyThemeGUI(ORIG_GUI_BASE, ORIG_GUI_STROKE)
+    applyThemeWM(ORIG_WM_BASE, ORIG_WM_STROKE)
+end
+
+local function applyTheme(base, st)
+    currentBase = base
+    currentStroke = st
+    resetAllToOriginal()
+    if themeTarget == "gui" or themeTarget == "both" then applyThemeGUI(base, st) end
+    if themeTarget == "wm" or themeTarget == "both" then applyThemeWM(base, st) end
+end
+
+local cRow = Instance.new("Frame")
+cRow.Size = UDim2.new(0.92, 0, 0, 20)
+cRow.BackgroundTransparency = 1
+cRow.ZIndex = 3
+cRow.Parent = SettingsTab
+
+local cLbl = Instance.new("TextLabel")
+cLbl.Size = UDim2.new(1, 0, 1, 0)
+cLbl.BackgroundTransparency = 1
+cLbl.Text = "Цвет GUI:  меняет цвет гуи/меню/ватермарки"
+cLbl.Font = Enum.Font.Code
+cLbl.TextSize = 11
+cLbl.TextColor3 = Color3.fromRGB(215, 220, 235)
+cLbl.TextXAlignment = Enum.TextXAlignment.Left
+cLbl.TextWrapped = true
+cLbl.ZIndex = 3
+cLbl.Parent = cRow
+
+local DD_Row = Instance.new("Frame")
+DD_Row.Size = UDim2.new(0.92, 0, 0, 34)
+DD_Row.BackgroundTransparency = 1
+DD_Row.ZIndex = 3
+DD_Row.Parent = SettingsTab
+hlist(DD_Row, 6)
+
+local DD = Instance.new("Frame")
+DD.Size = UDim2.new(1, -40, 1, 0)
+DD.BackgroundColor3 = Color3.fromRGB(26, 28, 36)
+DD.ZIndex = 3
+DD.Parent = DD_Row
+corner(DD, 8)
+stroke(DD, Color3.fromRGB(45, 48, 60), 1)
+
+local DDBtn = Instance.new("TextButton")
+DDBtn.Size = UDim2.new(1, 0, 1, 0)
+DDBtn.BackgroundTransparency = 1
+DDBtn.Text = "  " .. currentColorName .. " ▾"
+DDBtn.Font = Enum.Font.Code
+DDBtn.TextSize = 12
+DDBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+DDBtn.TextXAlignment = Enum.TextXAlignment.Left
+DDBtn.AutoButtonColor = false
+DDBtn.ZIndex = 4
+DDBtn.Parent = DD
+
+local ThemeGearBtn = Instance.new("TextButton")
+ThemeGearBtn.Size = UDim2.new(0, 34, 1, 0)
+ThemeGearBtn.BackgroundColor3 = Color3.fromRGB(40, 44, 58)
+ThemeGearBtn.Text = "⚙️"
+ThemeGearBtn.Font = Enum.Font.Code
+ThemeGearBtn.TextSize = 14
+ThemeGearBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+ThemeGearBtn.AutoButtonColor = false
+ThemeGearBtn.ZIndex = 4
+ThemeGearBtn.Parent = DD_Row
+corner(ThemeGearBtn, 8)
+stroke(ThemeGearBtn, Color3.fromRGB(80, 90, 115), 1)
+
+local Opts = Instance.new("ScrollingFrame")
+Opts.Size = UDim2.new(0.92, 0, 0, 0)
+Opts.BackgroundColor3 = Color3.fromRGB(20, 22, 30)
+Opts.Visible = false
+Opts.CanvasSize = UDim2.new(0, 0, 0, 0)
+Opts.AutomaticCanvasSize = Enum.AutomaticSize.Y
+Opts.ScrollBarThickness = 2
+Opts.ZIndex = 15
+Opts.Parent = SettingsTab
+corner(Opts, 8)
+stroke(Opts, Color3.fromRGB(50, 54, 70), 1)
+vlist(Opts, 0)
+
+local colors = {
+    {"Стандартный", Color3.fromRGB(18, 19, 23), Color3.fromRGB(50, 52, 63)},
+    {"Красный",     Color3.fromRGB(45, 12, 12), Color3.fromRGB(255, 60, 60)},
+    {"Синий",       Color3.fromRGB(12, 25, 45), Color3.fromRGB(60, 130, 255)},
+    {"Зелёный",     Color3.fromRGB(12, 45, 20), Color3.fromRGB(60, 255, 110)},
+    {"Фиолетовый",  Color3.fromRGB(35, 12, 45), Color3.fromRGB(180, 60, 255)},
+    {"Розовый",     Color3.fromRGB(45, 12, 30), Color3.fromRGB(255, 110, 190)},
+    {"Золотой",     Color3.fromRGB(45, 35, 12), Color3.fromRGB(255, 205, 60)},
+    {"Rainbow 🌈",  nil, nil}
+}
+
+local ddOpen = false
+DDBtn.MouseButton1Click:Connect(function()
+    ddOpen = not ddOpen
+    Opts.Visible = ddOpen
+    Opts.Size = ddOpen and UDim2.new(0.92, 0, 0, 176) or UDim2.new(0.92, 0, 0, 0)
+end)
+
+for _, c in ipairs(colors) do
+    local b = Instance.new("TextButton")
+    b.Size = UDim2.new(1, 0, 0, 28)
+    b.BackgroundTransparency = 1
+    b.Text = "  " .. c[1]
+    b.Font = Enum.Font.Code
+    b.TextSize = 12
+    b.TextColor3 = Color3.fromRGB(220, 225, 235)
+    b.TextXAlignment = Enum.TextXAlignment.Left
+    b.AutoButtonColor = false
+    b.ZIndex = 16
+    b.Parent = Opts
+    b.MouseButton1Click:Connect(function()
+        currentColorName = c[1]
+        DDBtn.Text = "  " .. c[1] .. " ▾"
+        Opts.Visible = false
+        ddOpen = false
+        if getgenv().AeroColorLoop then getgenv().AeroColorLoop:Disconnect(); getgenv().AeroColorLoop = nil end
+        if c[1] == "Rainbow 🌈" then
+            getgenv().AeroColorLoop = RunService.RenderStepped:Connect(function()
+                local h = (tick() % 4) / 4
+                applyTheme(Color3.fromHSV(h, 0.7, 0.25), Color3.fromHSV(h, 1, 1))
+            end)
+        else
+            applyTheme(c[2], c[3])
+        end
+        saveCfg()
+    end)
+end
+
+local function updateTargetButtons()
+    for id, btn in pairs(targetBtnsRef) do
+        local active = (id == themeTarget)
+        btn.BackgroundColor3 = active and Color3.fromRGB(70, 130, 220) or Color3.fromRGB(60, 66, 84)
+        btn.TextColor3 = active and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(215, 220, 235)
+    end
+end
+
+local targets = { {id = "gui", label = "🖥️  GUI / Меню"}, {id = "wm", label = "🏷️  Ватермарка"}, {id = "both", label = "✨  Оба сразу"} }
+for _, t in ipairs(targets) do
+    local b = Instance.new("TextButton")
+    b.Size = UDim2.new(1, 0, 0, 28)
+    b.BackgroundColor3 = Color3.fromRGB(60, 66, 84)
+    b.Text = "  " .. t.label
+    b.Font = Enum.Font.Code
+    b.TextSize = 12
+    b.TextColor3 = Color3.fromRGB(220, 225, 235)
+    b.TextXAlignment = Enum.TextXAlignment.Left
+    b.AutoButtonColor = false
+    b.ZIndex = 253
+    b.Parent = TBody
+    corner(b, 6)
+    targetBtnsRef[t.id] = b
+    b.MouseButton1Click:Connect(function()
+        themeTarget = t.id
+        updateTargetButtons()
+        applyTheme(currentBase, currentStroke)
+        saveCfg()
+    end)
+end
+
+updateTargetButtons()
+ThemeGearBtn.MouseButton1Click:Connect(function()
+    ThemeModalObj.Visible = not ThemeModalObj.Visible
+    if ThemeModalObj.Visible then ThemeModalObj.Position = UDim2.new(0.5, 0, 0.5, 0); updateTargetButtons() end
+end)
+
+local startColors = {
+    ["Стандартный"] = {Color3.fromRGB(18, 19, 23), Color3.fromRGB(50, 52, 63)},
+    ["Красный"]     = {Color3.fromRGB(45, 12, 12),  Color3.fromRGB(255, 60, 60)},
+    ["Синий"]       = {Color3.fromRGB(12, 25, 45),  Color3.fromRGB(60, 130, 255)},
+    ["Зелёный"]     = {Color3.fromRGB(12, 45, 20),  Color3.fromRGB(60, 255, 110)},
+    ["Фиолетовый"]  = {Color3.fromRGB(35, 12, 45),  Color3.fromRGB(180, 60, 255)},
+    ["Розовый"]     = {Color3.fromRGB(45, 12, 30),  Color3.fromRGB(255, 110, 190)},
+    ["Золотой"]     = {Color3.fromRGB(45, 35, 12),  Color3.fromRGB(255, 205, 60)},
+}
+if startColors[currentColorName] then
+    applyTheme(startColors[currentColorName][1], startColors[currentColorName][2])
+else
+    applyTheme(ORIG_GUI_BASE, ORIG_GUI_STROKE)
+end
+
+-- =========================================================
+-- ОПИСАНИЕ НА ГЛАВНОЙ
+-- =========================================================
+local descLabel = Instance.new("TextLabel")
+descLabel.Name = "DescLabel"
+descLabel.Parent = MainTab
+descLabel.Size = UDim2.new(0.92, 0, 0, 110)
+descLabel.BackgroundColor3 = Color3.fromRGB(24, 25, 33)
+descLabel.Text = " Премиум интерфейс активен\n • Полная ватермарка с реальным ником\n • Ресайз пальцами и мышкой за угол\n • Тотальная смена цвета (вкл Функции)\n • Настоящие 3D Партиклы в мире\n • Custom Fog — меняет небо и освещение!"
+descLabel.Font = Enum.Font.Code
+descLabel.TextSize = 12
+descLabel.TextColor3 = Color3.fromRGB(200, 205, 220)
+descLabel.TextXAlignment = Enum.TextXAlignment.Left
+descLabel.TextWrapped = true
+corner(descLabel, 8)
+stroke(descLabel, Color3.fromRGB(45, 48, 60), 1)
+local descPad = Instance.new("UIPadding", descLabel)
+descPad.PaddingLeft = UDim.new(0, 10)
+
+print("[Danyagey] loaded OK")
